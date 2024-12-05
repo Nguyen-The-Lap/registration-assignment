@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#registerForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const email = $('#username').val();
+        const password = $('#password').val();
+        const confirmPassword = $('#confirmPassword').val();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+
+        if (!emailRegex.test(email)) {
+          alert('Please enter a valid email address.');
+          return;
+        }
+
+        if (!passwordRegex.test(password)) {
+          alert('Password must have at least 6 characters, 1 number, and 1 special character.');
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          alert('Passwords do not match.');
+          return;
+        }
+
+        // Send form data to the backend
+        $.post('/register', { username: email, password: password }, function (response) {
+          alert(response.message);
+        }).fail(function (error) {
+          alert(error.responseJSON.message);
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>User Registration</h1>
+  <form id="registerForm">
+    <label for="username">Username (Email):</label><br>
+    <input type="email" id="username" name="username" required><br><br>
+
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <label for="confirmPassword">Confirm Password:</label><br>
+    <input type="password" id="confirmPassword" name="confirmPassword" required><br><br>
+
+    <button type="submit">Register</button>
+  </form>
+</body>
+</html>
